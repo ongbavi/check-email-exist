@@ -17,23 +17,23 @@ fi
 check (){
 OUTPUT=`expect expectTelnet.tcl $EMAIL $MX_HOSTS $PORTS $SENDER`;
 	if [[ `echo $OUTPUT|grep "2.1.5"` ]];then
-		echo "$dt $EMAIL : exists";
+		echo "$dt $EMAIL : exists" >> log;
 	elif [[ `echo $OUTPUT|grep "2.1.1"` ]]; then
-		echo "$EMAIL does not exists $OUTPUT";
-	else echo "$dt $EMAIL : can't check $MX_HOSTS";
+		echo "$dt $EMAIL : does not exists" >> log;
+	else echo "$dt $EMAIL : can't check $MX_HOSTS $OUTPUT" >> log;
 	fi
 }
 
-if [[ $DOMAIN = "gmail.com" || $DOMAIN = "yahoo.com" ||$DOMAIN == "hotmail.com" || $DOMAIN == "live.com" ]]; then
-	echo "$EMAIL của gmail";
+if [[ $DOMAIN == "hotmail.com" || $DOMAIN == "live.com" || $DOMAIN == "amazonses.com" ]]; then
+	echo "$dt $EMAIL : của gmail" >> log;
 else 
-	if [[ `echo $MX_HOSTS | grep google.com` || `echo $MX_HOSTS|grep outlook.com` || `echo $MX_HOSTS|grep yahoodns` ]]; then
-		echo "$dt $EMAIL : is gmail or outlook or yahoo, not check";
+	if [[ `echo $MX_HOSTS|grep outlook.com`  ]]; then
+		echo "$dt $EMAIL : is gmail or outlook or yahoo, not check" >> log;
 	else 
 		if [[ `echo "quit" | timeout --signal=9 10 telnet $MX_HOSTS 25 | grep "Escape character is"` ]];then #time out after 10s
 			check
 		else
-			echo "$dt $EMAIL : server $MX_HOSTS port 25 is not open, timeout 10s";
+			echo "$dt $EMAIL : server $MX_HOSTS port 25 is not open, timeout 10s" >> log;
 		fi
 	fi
 fi
